@@ -60,6 +60,7 @@ contract Voting{
         candidate.candiadateAddress=_address;
         allCandidateAddresses.push(_address);
     }
+   
     function addVoter(string memory _name,uint _age,address _address) public isElectionOrganizer{
         require(_age>=18,"Not eligible to vote");
         id=id+1;
@@ -81,6 +82,9 @@ contract Voting{
         votedList.push(msg.sender);
         allowed=1;
         
+    }
+     function getCandidateVotes(address _candidateAdress)public view returns (uint) {
+       return candidates[_candidateAdress].votesRececieved;
     }
     function showWinner() public view  returns (Candidate memory, address) {
         uint256 winningVotes = 0;
