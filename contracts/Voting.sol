@@ -88,7 +88,8 @@ contract Voting{
      function getCandidateVotes(address _candidateAdress)public view returns (uint) {
        return candidates[_candidateAdress].votesRececieved;
     }
-    function showWinner() public view returns ( Candidate memory, address ) {
+   
+    function showWinner() public view returns(address)   {
         uint256 winningVotes = 0;
         uint256 winningCandidateIndex = 0;
         require(electionEnded,"Election didn't end");
@@ -99,7 +100,6 @@ contract Voting{
             }
         }  
         
-
-        return (candidates[allCandidateAddresses[winningCandidateIndex]],allCandidateAddresses[winningCandidateIndex]);
+         return allCandidateAddresses[winningCandidateIndex];
     }
 }
