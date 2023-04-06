@@ -1,6 +1,5 @@
 //SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.0;
-
 contract Voting{
     address public electionOrganizer;
     uint id=1;
@@ -15,6 +14,7 @@ contract Voting{
         address candiadateAddress;
         uint    votesRececieved;
     }
+    mapping(address=>bool) public candidateExists;
     address[] public allCandidateAddresses;
     mapping(address=>Candidate) public candidates;
 
@@ -51,6 +51,7 @@ contract Voting{
         electionStarted=false;
     }
     function setCandidate(string memory _name, uint _age, string memory _partyName, address _address) public isElectionOrganizer{
+        require(!candidateExists[_address],"Already candidate exists");
         Candidate storage candidate=candidates[_address] ;
         id=id+1;
         candidate.candidateId=id;
@@ -59,6 +60,7 @@ contract Voting{
         candidate.partyName=_partyName;
         candidate.candiadateAddress=_address;
         allCandidateAddresses.push(_address);
+        candidateExists[_address]=true;
     }
    
     function addVoter(string memory _name,uint _age,address _address) public isElectionOrganizer{
@@ -86,7 +88,7 @@ contract Voting{
      function getCandidateVotes(address _candidateAdress)public view returns (uint) {
        return candidates[_candidateAdress].votesRececieved;
     }
-    function showWinner() public view  returns (Candidate memory, address) {
+    function showWinner() public view returns ( Candidate memory, address ) {
         uint256 winningVotes = 0;
         uint256 winningCandidateIndex = 0;
         require(electionEnded,"Election didn't end");
@@ -96,6 +98,7 @@ contract Voting{
                 winningCandidateIndex = i;
             }
         }  
+        
 
         return (candidates[allCandidateAddresses[winningCandidateIndex]],allCandidateAddresses[winningCandidateIndex]);
     }

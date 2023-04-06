@@ -3,11 +3,20 @@ const { expect } = require("chai");
 const hre = require("hardhat");
 describe("Testing Voting Contract", function () {
   async function deployFixture() {
-    const [owner, voter1, candidateAdr] = await ethers.getSigners();
+    const [owner, voter1, candidateAdr, voter2, voter3, candidateAdr2] =
+      await ethers.getSigners();
     const Voting = await hre.ethers.getContractFactory("Voting");
     const voting = await Voting.deploy();
     await voting.deployed();
-    return { voting, owner, voter1, candidateAdr };
+    return {
+      voting,
+      owner,
+      voter1,
+      candidateAdr,
+      voter2,
+      voter3,
+      candidateAdr2,
+    };
   }
   describe("checking if organizer matches with deployer", function () {
     it("Should be organizer Only", async () => {
@@ -85,6 +94,20 @@ describe("Testing Voting Contract", function () {
       expect(await voting.getCandidateVotes(candidateAdr.address)).to.equal(
         votesTillNow.add(1)
       );
+    });
+  });
+  describe("checking if candidate Exists ", function () {
+    it("Candidate Exists already", async () => {
+      const { voting, candidateAdr } = await loadFixture(deployFixture);
+      await voting.setCandidate("Ram", 35, "XYZ", candidateAdr.address);
+      await expect(
+        voting.setCandidate("Ram", 35, "XYZ", candidateAdr.address)
+      ).to.be.revertedWith("Already candidate exists");
+    });
+    it("Candidate do not exists previously so candidate added", async () => {
+      const { voting, candidateAdr } = await loadFixture(deployFixture);
+      expect(voting.setCandidate("Ram", 35, "XYZ", candidateAdr.address)).to.not
+        .be.reverted;
     });
   });
 });
