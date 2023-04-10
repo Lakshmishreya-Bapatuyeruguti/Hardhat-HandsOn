@@ -8,5 +8,4 @@
 - Results Screenshots <br>
 Test Cases:<br>
 
-![Screenshot from 2023-04-06 12-39-02](https://user-images.githubusercontent.com/122250979/230322746-4ae61cea-516f-4da3-8a02-c7268450b896.png)
-<br>
+![Screenshot from 2023-04-10 11-01-12](https://user-images.githubusercontent.com/122250979/230833910-c16386a4-f739-4aa8-8e22-6526328e2311.png)
