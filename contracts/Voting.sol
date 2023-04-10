@@ -39,6 +39,7 @@ contract Voting{
     event candidateAddedEvent(address candidate,string meassage);
     event voterVotedEvent(address voter,string message);
 
+
     modifier isElectionOrganizer(){
         _;
         require(msg.sender==electionOrganizer,"Only election organizer is allowed");
@@ -108,7 +109,7 @@ contract Voting{
                 winningCandidateIndex = i;
             }
         }  
-        
+      
          return allCandidateAddresses[winningCandidateIndex];
     }
 }

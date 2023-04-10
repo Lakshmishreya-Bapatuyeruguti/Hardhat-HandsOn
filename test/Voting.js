@@ -143,4 +143,19 @@ describe("Testing Voting Contract", function () {
         );
     });
   });
+  describe("checking if winner is displayed", function () {
+    it("Election Winner displayed ", async () => {
+      const { voting, voter1, candidateAdr, voter2, voter3, candidateAdr2 } =
+        await loadFixture(deployFixture);
+
+      await voting.setCandidate("Ram", 35, "XYZ", candidateAdr.address);
+      await voting.setCandidate("shyam", 45, "ABC", candidateAdr2.address);
+      await voting.startVoting();
+      await voting.connect(voter1).voteTo(2, candidateAdr.address);
+      await voting.connect(voter2).voteTo(2, candidateAdr.address);
+      await voting.connect(voter3).voteTo(3, candidateAdr2.address);
+      await voting.endVoting();
+      expect(await voting.showWinner()).to.equal(candidateAdr.address);
+    });
+  });
 });
