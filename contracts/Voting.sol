@@ -34,6 +34,11 @@ contract Voting{
         electionOrganizer=msg.sender;
         
     }
+    event electionStartEvent(string message);
+    event electionEndEvent(string message);
+    event candidateAddedEvent(address candidate,string meassage);
+    event voterVotedEvent(address voter,string message);
+
     modifier isElectionOrganizer(){
         _;
         require(msg.sender==electionOrganizer,"Only election organizer is allowed");
@@ -45,10 +50,12 @@ contract Voting{
   
     function startVoting() public isElectionOrganizer{
         electionStarted=true;
+        emit electionStartEvent("Election has now started");
     }
        function endVoting() public isElectionOrganizer{
         electionEnded=true;
         electionStarted=false;
+        emit electionEndEvent("Election has now ended");
     }
     function setCandidate(string memory _name, uint _age, string memory _partyName, address _address) public isElectionOrganizer{
         require(!candidateExists[_address],"Already candidate exists");
@@ -61,6 +68,7 @@ contract Voting{
         candidate.candiadateAddress=_address;
         allCandidateAddresses.push(_address);
         candidateExists[_address]=true;
+        emit candidateAddedEvent(_address,"Candidate has been added successfully");
     }
    
     function addVoter(string memory _name,uint _age,address _address) public isElectionOrganizer{
@@ -83,6 +91,7 @@ contract Voting{
         voter.hasVoted=true;
         votedList.push(msg.sender);
         allowed=1;
+        emit voterVotedEvent(msg.sender,"Voter has voted");
         
     }
      function getCandidateVotes(address _candidateAdress)public view returns (uint) {

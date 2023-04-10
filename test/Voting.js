@@ -33,6 +33,14 @@ describe("Testing Voting Contract", function () {
       expect(await voting.electionStarted()).to.equal(true);
     });
   });
+  describe("checking if electionStart Event is emitted", function () {
+    it("Voting started event successful", async () => {
+      const { voting } = await loadFixture(deployFixture);
+      expect(await voting.electionStarted())
+        .to.emit(voting, "electionStartEvent")
+        .withArgs("Election has now started");
+    });
+  });
   describe("checking Age of Voter for Eligibility", function () {
     it("Voter is eligible to vote", async () => {
       const [, voter1] = await ethers.getSigners();
@@ -66,7 +74,14 @@ describe("Testing Voting Contract", function () {
       expect(await voting.electionEnded()).to.equal(true);
     });
   });
-
+  describe("checking if electionEnd Event is emitted", function () {
+    it("Voting ended event successful", async () => {
+      const { voting } = await loadFixture(deployFixture);
+      expect(await voting.endVoting())
+        .to.emit(voting, "electionEndEvent")
+        .withArgs("Election has now ended");
+    });
+  });
   describe("checking if Voter has voted previously", function () {
     it("Voter has voted only once", async () => {
       const { voting, voter1, candidateAdr } = await loadFixture(deployFixture);
@@ -95,6 +110,14 @@ describe("Testing Voting Contract", function () {
         votesTillNow.add(1)
       );
     });
+    it("Voter has voted event emitted successfully", async () => {
+      const { voting, candidateAdr, voter1 } = await loadFixture(deployFixture);
+      let votesTillNow = await voting.getCandidateVotes(candidateAdr.address);
+      await voting.startVoting();
+      expect(await voting.connect(voter1).voteTo(3, candidateAdr.address))
+        .to.emit(voting, "voterVotedEvent")
+        .withArgs(voter1, "Voter has voted");
+    });
   });
   describe("checking if candidate Exists ", function () {
     it("Candidate Exists already", async () => {
@@ -108,6 +131,16 @@ describe("Testing Voting Contract", function () {
       const { voting, candidateAdr } = await loadFixture(deployFixture);
       expect(voting.setCandidate("Ram", 35, "XYZ", candidateAdr.address)).to.not
         .be.reverted;
+    });
+    it("set candidate event successful", async () => {
+      const { voting, candidateAdr } = await loadFixture(deployFixture);
+
+      expect(await voting.setCandidate("Ram", 35, "XYZ", candidateAdr.address))
+        .to.emit(voting, "candidateAddedEvent")
+        .withArgs(
+          candidateAdr.address,
+          "Candidate has been added successfully"
+        );
     });
   });
 });
